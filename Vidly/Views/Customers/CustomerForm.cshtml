@@ -1,0 +1,39 @@
+﻿@model Vidly.ViewModels.CustomerViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Customer != null)
+{
+   <h2>Edit Customer</h2>
+}
+else
+{
+    <h2>New Customer</h2>
+}
+@using (@Html.BeginForm("Save", "Customers"))
+{
+    <div class="form-group">
+        @Html.LabelFor( c => c.Customer.Name )
+        @Html.TextBoxFor( c => c.Customer.Name, new {@class = "form-control"} )
+    </div>
+    <div class="form-group">
+        @Html.LabelFor( c => c.Customer.Birthdate )
+        @Html.TextBoxFor( c => c.Customer.Birthdate, "{0: d MMM yyyy}", new {@class = "form-control"} )
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(c => c.Customer.MembershipTypeId)
+        @Html.DropDownListFor( c => c.Customer.MembershipTypeId, new SelectList(Model.MembershipTypes, "Id", "Name"), "Choose Membership Type", new { @class = "form-control" })
+    </div>
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(c => c.Customer.IsSubscribedToNewletter) Is Subscribed to Newsletter
+        </label>
+    </div>
+    @Html.HiddenFor(c => c.Customer.Id)
+    <button type="submit" class="btn btn-primary">Submit</button>
+}
+@*at the end of the using tag, the object returned from @using will be disposed. meaning we will get the closing form tag*@

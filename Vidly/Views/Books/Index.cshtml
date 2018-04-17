@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>All Books</h2>
+@Html.ActionLink("New Book", "New", "Books", null, new { @class = "btn btn-primary"})
+<br /><br /><br />
+<table id="books" class="table">
+    <thead>
+        <tr>
+            <td>Book</td>
+            <td>Category</td>
+            <td>Action</td>
+        </tr>
+    </thead>
+
+    <tbody>
+@*        @foreach (var book in Model.Books)*@
+@*        {*@
+@*            <tr>*@
+@*                <td>@Html.ActionLink(book.Name, "Edit", "Books", new { id = book.Id }, null)</td>*@
+@*                <td>@book.Genre.Name</td>*@
+@*            </tr>*@
+@*        }*@
+    </tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            var table = $('#books').DataTable({ // since we're getting the books via apis, we dont need to render the customers on the server again
+                ajax: {
+                    url: '/api/books',
+                    dataSrc: '' // could be customers if its something like: data: { count: 10, customers: [...] }
+                },
+                columns: [ // columns as a array of objects
+                    {
+                        data: 'name',
+                        render: function(data, type, book) { // custom rendering function to render each row in the table  (data - value of data key, type - type of column, book - actual object we are rendering)
+                            return "<a href='/books/edit/" + book.id + "'>" + book.name + "</a>";
+                        }
+                    },
+                    {
+                        data: 'category.name'
+                    },
+                    {
+                        data: 'id',
+                        render: function(data) { // custom rendering function to render each row in the table  ()
+                            return "<button class='btn btn-danger btn-sm js-delete' data-book-id=" + data + ">Delete</button<>";
+                        }
+                    }
+                ]
+            });
+
+            // need reference to delete button
+            $("#books").on("click",
+                '.js-delete',
+                function () {
+                    var _this = $(this);
+                    if (confirm("Are you sure you want to delete this book?")) {
+                        $.ajax({
+                            url: '/api/books/' + _this.attr("data-book-id"),
+                            method: 'DELETE',
+                            success: function () {
+                                console.log('successfully deleted book');
+                                table.row(_this.parents('tr')).remove().draw();
+                            }
+                        });
+                    }
+                });
+    });
+    </script>
+}
+
+
+
+
+
+

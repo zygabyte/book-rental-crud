@@ -1,0 +1,40 @@
+﻿@model Vidly.ViewModels.BooksCustomers
+@{
+    ViewBag.Title = "BookForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Book != null)
+{
+    <h2>Edit Book</h2>
+}
+else
+{
+    <h2>New Book</h2>
+}
+
+@using (@Html.BeginForm("Save", "Books"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Book.Name)
+        @Html.TextBoxFor(m => m.Book.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Book.ReleaseDate)
+        @Html.TextBoxFor(m => m.Book.ReleaseDate, "{0: dd MMM yyyy}", new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Book.DateAdded)
+        @Html.TextBoxFor(m => m.Book.DateAdded, "{0: dd MMM yyyy}", new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Book.CategoryId)
+        @Html.DropDownListFor(m => m.Book.CategoryId, new SelectList(Model.Categories, "Id", "Name"), "Select Book Category", new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Book.NumberInStock)
+        @Html.TextBoxFor(m => m.Book.NumberInStock, new { @class = "form-control" })
+    </div>
+    @Html.HiddenFor(m => m.Book.Id)
+    <button type="submit" class="btn btn-primary">Submit</button>
+}
